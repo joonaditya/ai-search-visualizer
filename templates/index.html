@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Intelligent Search Visualizer — Chicago Metro Area</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background: #0f172a;
+  }
+  #sidebar {
+    width: 340px;
+    padding: 20px;
+    background: #111827;
+    color: #e5e7eb;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  #sidebar h1 {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  #sidebar p.subtitle {
+    color: #9ca3af;
+    font-size: 12px;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    margin: 12px 0 4px;
+    color: #cbd5e1;
+  }
+  select, button {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #374151;
+    background: #1f2937;
+    color: #f9fafb;
+    font-size: 14px;
+  }
+  button {
+    margin-top: 18px;
+    background: #2563eb;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  button:hover { background: #1d4ed8; }
+  #result {
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  #result .stat { color: #93c5fd; font-weight: 600; }
+  #concept {
+    margin-top: 16px;
+    padding: 12px;
+    background: #1f2937;
+    border-radius: 8px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  #concept h3 { margin: 0 0 6px; font-size: 14px; color: #93c5fd; }
+  #concept b { color: #f9fafb; }
+  #map { flex: 1; }
+  #error {
+    color: #f87171;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h1>🗺️ AI Search Visualizer</h1>
+  <p class="subtitle" id="region-label">Loading region...</p>
+
+  <label for="source">Source</label>
+  <select id="source"></select>
+
+  <label for="destination">Destination</label>
+  <select id="destination"></select>
+
+  <label for="algorithm">Search Algorithm</label>
+  <select id="algorithm">
+    <option value="bfs">Breadth-First Search (BFS)</option>
+    <option value="dfs">Depth-First Search (DFS)</option>
+    <option value="ucs">Uniform-Cost Search (UCS)</option>
+    <option value="ids">Iterative Deepening Search (IDS)</option>
+    <option value="greedy">Greedy Best-First Search</option>
+    <option value="astar" selected>A* Search</option>
+  </select>
+
+  <button id="run-btn">Run Search</button>
+  <div id="error"></div>
+  <div id="result"></div>
+  <div id="concept"></div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let map = L.map('map').setView([41.85, -87.9], 9);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+let mapData = null;
+let markers = {};
+let edgeLayer = L.layerGroup().addTo(map);
+let pathLayer = L.layerGroup().addTo(map);
+
+async function loadMap() {
+  const res = await fetch('/api/map');
+  mapData = await res.json();
+
+  document.getElementById('region-label').textContent = mapData.region;
+
+  const sourceSel = document.getElementById('source');
+  const destSel = document.getElementById('destination');
+  const cityNames = Object.keys(mapData.nodes).sort();
+
+  // Fill both dropdowns with every city in the graph
+  cityNames.forEach(city => {
+    const opt1 = document.createElement('option');
+    opt1.value = city; opt1.textContent = city;
+    sourceSel.appendChild(opt1);
+
+    const opt2 = document.createElement('option');
+    opt2.value = city; opt2.textContent = city;
+    destSel.appendChild(opt2);
+  });
+  sourceSel.value = cityNames[0];
+  destSel.value = cityNames[cityNames.length - 1];
+
+  // Dropping a marker on the map for every city
+  cityNames.forEach(city => {
+    const { lat, lon } = mapData.nodes[city];
+    const marker = L.circleMarker([lat, lon], {
+      radius: 6, color: '#2563eb', fillColor: '#3b82f6', fillOpacity: 0.9
+    }).addTo(map).bindTooltip(city);
+    markers[city] = marker;
+  });
+
+  mapData.edges.forEach(edge => {
+    const a = mapData.nodes[edge.from];
+    const b = mapData.nodes[edge.to];
+    L.polyline([[a.lat, a.lon], [b.lat, b.lon]], {
+      color: '#94a3b8', weight: 1.5, opacity: 0.5
+    }).addTo(edgeLayer);
+  });
+}
+
+async function runSearch() {
+  const source = document.getElementById('source').value;
+  const destination = document.getElementById('destination').value;
+  const algorithm = document.getElementById('algorithm').value;
+  const errorDiv = document.getElementById('error');
+  const resultDiv = document.getElementById('result');
+  const conceptDiv = document.getElementById('concept');
+  errorDiv.textContent = '';
+  pathLayer.clearLayers();
+
+  if (source === destination) {
+    errorDiv.textContent = 'Source and destination must be different.';
+    return;
+  }
+
+  const res = await fetch('/api/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source, destination, algorithm })
+  });
+  const data = await res.json();
+
+  if (data.error) {
+    errorDiv.textContent = data.error;
+    resultDiv.innerHTML = '';
+    conceptDiv.innerHTML = '';
+    return;
+  }
+
+  if (!data.path || data.path.length === 0) {
+    resultDiv.innerHTML = '<p>No path found.</p>';
+  } else {
+    resultDiv.innerHTML = `
+      <p><span class="stat">Path:</span> ${data.path.join(' → ')}</p>
+      <p><span class="stat">Total Cost:</span> ${data.cost.toFixed(2)} km</p>
+      <p><span class="stat">Nodes Expanded:</span> ${data.nodes_expanded}</p>
+    `;
+
+    const latlngs = data.path.map(city => {
+      const n = mapData.nodes[city];
+      return [n.lat, n.lon];
+    });
+    L.polyline(latlngs, { color: '#f97316', weight: 5, opacity: 0.9 }).addTo(pathLayer);
+    map.fitBounds(latlngs, { padding: [40, 40] });
+  }
+
+  const c = data.concept;
+  conceptDiv.innerHTML = `
+    <h3>${c.name}</h3>
+    <p><b>Main Idea:</b> ${c.main_idea}</p>
+    <p><b>Node Selection:</b> ${c.node_selection}</p>
+    <p><b>Information Used:</b> ${c.information_used}</p>
+  `;
+}
+
+document.getElementById('run-btn').addEventListener('click', runSearch);
+loadMap();
+</script>
+
+</body>
+</html>

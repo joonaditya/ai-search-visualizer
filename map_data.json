@@ -1,0 +1,245 @@
+{
+  "region": "Chicago Metropolitan Area, Illinois, USA",
+  "nodes": {
+    "Chicago": {
+      "lat": 41.8755616,
+      "lon": -87.6244212
+    },
+    "Evanston": {
+      "lat": 42.0470043,
+      "lon": -87.6846053
+    },
+    "Skokie": {
+      "lat": 42.0262972,
+      "lon": -87.7521069
+    },
+    "Naperville": {
+      "lat": 41.7728699,
+      "lon": -88.1479278
+    },
+    "Aurora": {
+      "lat": 41.7571701,
+      "lon": -88.3147539
+    },
+    "Joliet": {
+      "lat": 41.5263603,
+      "lon": -88.0840212
+    },
+    "Elgin": {
+      "lat": 42.03726,
+      "lon": -88.2810994
+    },
+    "Waukegan": {
+      "lat": 42.3602273,
+      "lon": -87.8318164
+    },
+    "Cicero": {
+      "lat": 41.8455398,
+      "lon": -87.7540199
+    },
+    "Arlington Heights": {
+      "lat": 42.0811563,
+      "lon": -87.9802164
+    },
+    "Schaumburg": {
+      "lat": 42.0333608,
+      "lon": -88.083406
+    },
+    "Palatine": {
+      "lat": 42.1105502,
+      "lon": -88.0434304
+    },
+    "Orland Park": {
+      "lat": 41.630663,
+      "lon": -87.8536288
+    },
+    "Tinley Park": {
+      "lat": 41.5733669,
+      "lon": -87.7844944
+    },
+    "Oak Lawn": {
+      "lat": 41.7108662,
+      "lon": -87.7581081
+    },
+    "Berwyn": {
+      "lat": 41.8505874,
+      "lon": -87.7936685
+    },
+    "Des Plaines": {
+      "lat": 42.0415823,
+      "lon": -87.8873916
+    },
+    "Wheaton": {
+      "lat": 41.8646959,
+      "lon": -88.1101709
+    },
+    "Downers Grove": {
+      "lat": 41.7936822,
+      "lon": -88.0102281
+    },
+    "Bolingbrook": {
+      "lat": 41.7003302,
+      "lon": -88.0717708
+    },
+    "Oak Park": {
+      "lat": 41.8878145,
+      "lon": -87.7887615
+    },
+    "Elmhurst": {
+      "lat": 41.8994745,
+      "lon": -87.9403418
+    }
+  },
+  "edges": [
+    {
+      "from": "Chicago",
+      "to": "Cicero",
+      "distance": 14.1
+    },
+    {
+      "from": "Chicago",
+      "to": "Oak Park",
+      "distance": 15.92
+    },
+    {
+      "from": "Chicago",
+      "to": "Evanston",
+      "distance": 22.7
+    },
+    {
+      "from": "Chicago",
+      "to": "Oak Lawn",
+      "distance": 26.93
+    },
+    {
+      "from": "Chicago",
+      "to": "Berwyn",
+      "distance": 16.77
+    },
+    {
+      "from": "Cicero",
+      "to": "Berwyn",
+      "distance": 3.92
+    },
+    {
+      "from": "Oak Park",
+      "to": "Elmhurst",
+      "distance": 16.97
+    },
+    {
+      "from": "Elmhurst",
+      "to": "Downers Grove",
+      "distance": 17.15
+    },
+    {
+      "from": "Downers Grove",
+      "to": "Naperville",
+      "distance": 12.31
+    },
+    {
+      "from": "Naperville",
+      "to": "Aurora",
+      "distance": 14.98
+    },
+    {
+      "from": "Naperville",
+      "to": "Bolingbrook",
+      "distance": 14.85
+    },
+    {
+      "from": "Bolingbrook",
+      "to": "Joliet",
+      "distance": 21.1
+    },
+    {
+      "from": "Joliet",
+      "to": "Orland Park",
+      "distance": 31.7
+    },
+    {
+      "from": "Orland Park",
+      "to": "Tinley Park",
+      "distance": 12.26
+    },
+    {
+      "from": "Tinley Park",
+      "to": "Oak Lawn",
+      "distance": 19.92
+    },
+    {
+      "from": "Evanston",
+      "to": "Skokie",
+      "distance": 8.02
+    },
+    {
+      "from": "Skokie",
+      "to": "Des Plaines",
+      "distance": 11.9
+    },
+    {
+      "from": "Des Plaines",
+      "to": "Arlington Heights",
+      "distance": 9.26
+    },
+    {
+      "from": "Arlington Heights",
+      "to": "Palatine",
+      "distance": 6.55
+    },
+    {
+      "from": "Palatine",
+      "to": "Schaumburg",
+      "distance": 11.29
+    },
+    {
+      "from": "Schaumburg",
+      "to": "Elgin",
+      "distance": 23.33
+    },
+    {
+      "from": "Elgin",
+      "to": "Aurora",
+      "distance": 34.7
+    },
+    {
+      "from": "Des Plaines",
+      "to": "Schaumburg",
+      "distance": 19.75
+    },
+    {
+      "from": "Arlington Heights",
+      "to": "Schaumburg",
+      "distance": 13.43
+    },
+    {
+      "from": "Waukegan",
+      "to": "Evanston",
+      "distance": 45.5
+    },
+    {
+      "from": "Waukegan",
+      "to": "Des Plaines",
+      "distance": 45.13
+    },
+    {
+      "from": "Elmhurst",
+      "to": "Schaumburg",
+      "distance": 25.51
+    },
+    {
+      "from": "Wheaton",
+      "to": "Elmhurst",
+      "distance": 17.3
+    },
+    {
+      "from": "Wheaton",
+      "to": "Naperville",
+      "distance": 12.59
+    },
+    {
+      "from": "Wheaton",
+      "to": "Downers Grove",
+      "distance": 15.77
+    }
+  ]
+}
