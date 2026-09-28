@@ -41,8 +41,8 @@
 
 ## Section 4: Deployed and Presentation Information
 - **Deployment Platform:** Render
-- **Live Deployment URL:** https://ai-search-visualizer-j9pu.onrender.com/
-- **Video Presentation Link:** [Provide an accessible link to your 5–7 minute video presentation]
+- **Live Deployment URL:** https://ai-search-visualizer-lv40.onrender.com/
+- **Video Presentation Link:** https://drive.google.com/drive/folders/13vnz9e5jkwf5a_KHqcoN4sGsnHMPdlaG?usp=sharing
 
 ---
 
